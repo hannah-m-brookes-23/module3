@@ -84,10 +84,29 @@ car_t *lremove(char *platep) {
 		return NULL;
 	}
 	else {
+		car_t *prev_car = NULL;
 		car_t *curr_car = front;
 		while (curr_car != NULL) {
-			if (strcmp(platep, curr_car -> plate) == 0)
+			// identifies a car to remove (and thus return)
+			if (strcmp(platep, curr_car -> plate) == 0) {
+				// car to be removed is the first in the list: update the
+				// front pointer to be the car next in line to the car to be
+				// removed
+				if (prev_car == NULL) 
+					front = curr_car -> next;
+				// car to be removed is the last car in the list: update the
+				// previous car's next pointer to be null
+				else if (curr_car -> next == NULL) 
+					prev_car -> next = NULL;
+				// car to be removed is neither the first nor the last car in
+				// the list (in the middle of the list): update the previous
+				// car's next pointer to be the removed car's next pointer
+				else 
+					prev_car -> next = curr_car -> next;
+		    // return the current car
 				return curr_car;
+			}
+			prev_car = curr_car;
 			curr_car = curr_car -> next;
 		}
 		// if reached end of while loop, then no such car exists and
