@@ -13,21 +13,16 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
-
-#define MAXREG 10
-
-typedef struct car {
-	struct car *next;
-	char plate[MAXREG];
-	double price;
-	int year;
-} car_t;
-
+#include "list.h"
 
 // global declaration, hides list of cars internally
 static car_t *front=NULL;
 
 
+/* 
+ * put(): places a car at the beginning of the list; returns 0
+ * indicating success
+ */
 int32_t lput(car_t *cp) {
 	// if the list is currently empty, set new car to be the front and
 	// do nothing else
@@ -47,6 +42,10 @@ int32_t lput(car_t *cp) {
 }
 
 
+/*
+ * get(): remove and return the first car in the list (returns NULL if
+ * the list is empty)
+ */
 car_t *lget() {
 	// if the list is empty, return NULL
 	if (front == NULL) {
@@ -65,6 +64,9 @@ car_t *lget() {
 }
 
 
+/*
+ * apply(): applies an arbitrary function to every car in the list
+ */
 void lapply(void (*fn)(car_t *cp)) {
 	// if the list is empty, do nothing. otherwise, apply the function
 	// to every car in the list
@@ -78,6 +80,10 @@ void lapply(void (*fn)(car_t *cp)) {
 }
 
 
+/*
+ * remove(): find, rmeove, and return any car with the designated
+ * plate (returns NULL ifa matching car is not present)
+ */
 car_t *lremove(char *platep) {
 	// returns NULL if the list is empty
 	if (front == NULL) {
