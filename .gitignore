@@ -11,3 +11,6 @@
 
 # ignore debugging symbols
 *.dSYM
+
+# ignore .backup
+.backup

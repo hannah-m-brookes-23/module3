@@ -55,3 +55,37 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
   return hash % tablesize;
 }
 
+typedef struct hashtable_array {
+	queue table[]
+}
+                                                                               
+hashtable_t *hopen(uint32_t hsize) {                                           
+	hashtable_array table;
+}                                                                              
+                                                                               
+void hclose(hashtable_t *htp) {                                                
+                                                                               
+}                                                                              
+                                                                               
+                                                                               
+int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {        
+                                                                               
+}                                                                              
+                                                                               
+void happly(hashtable_t *htp, void (*fn)(void* ep)) {                          
+                                                                               
+}                                                                              
+                                                                               
+void *hsearch(hashtable_t *htp,                                                
+              bool (*searchfn)(void* elementp, const void* searchkeyp),        
+              const char _key,                                                 
+              int32_t keylen) {                                                
+                                                                               
+}                                                                              
+
+void *hremove(hashtable_t *htp,                                                
+              bool (*searchfn)(void* elementp, const void* searchkeyp),
+              const char _key,
+              int32_t keylen) {
+
+}
