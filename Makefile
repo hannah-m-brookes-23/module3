@@ -1,6 +1,6 @@
 CFLAGS=-Wall -pedantic -std=c11 -I. -g
 
-all:		test1
+all:		test1.bin
 
 list.o: list.c list.h
 	gcc $(CFLAGS) -c list.c
@@ -8,8 +8,9 @@ list.o: list.c list.h
 test1.o: test1.c list.h
 	gcc $(CFLAGS) -c test1.c
 
-test1:	test1.o list.o
-	gcc $(CFLAGs) test1.o list.o -o test1
+# .bin indicates binary file -> used for detection to run valgrind
+test1.bin:	test1.o list.o
+	gcc $(CFLAGS) test1.o list.o -o test1.bin
 
 clean:
 	rm -f *.o test1
