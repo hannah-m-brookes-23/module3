@@ -55,10 +55,14 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
   return hash % tablesize;
 }
 
-typedef struct hashtable_array {
-	queue table[]
+typedef struct hashtableArray {
+	queue table[]; // conventionally size of hash table
+} hashtableArray_t;
+
+static hashtableArray_t* makeTable(void) {
+	hashtabelArray* table = 
 }
-                                                                               
+
 hashtable_t *hopen(uint32_t hsize) {                                           
 	hashtable_array table;
 }                                                                              
