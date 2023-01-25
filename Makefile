@@ -13,4 +13,4 @@ test1.bin:	test1.o list.o
 	gcc $(CFLAGS) test1.o list.o -o test1.bin
 
 clean:
-	rm -f *.o test1
+	rm -f *.o test1.bin
