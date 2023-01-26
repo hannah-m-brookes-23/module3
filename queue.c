@@ -121,13 +121,33 @@ void *qget(queue_t *qp) {
 void qapply(queue_t *qp, void (*fn)(void* elementp)) {
     internalQueue_t *queue = (internalQueue_t*) qp;
 
-    queueItem_t *current = queue->front;
+    queueItem_t *current = queue -> front;
 
     while (current != NULL) {
         fn(current->item);
         current = current->next;
     }
 
+}
+
+// searches the queue using boolean function, returns pointer to an
+// element if its found otherwise returns NULL
+void* qsearch(queue_t *qp,
+							bool (*searchfn)(void* elementp, const void* keyp),
+							const void* skeyp) {
+
+	internalQueue_t *queue = (internalQueue_t*) qp;
+	queueItem_t *current = queue -> front;
+
+	while (current != NULL) {
+		void *itemp = current -> item;
+		bool matches = searchfn(itemp, skeyp);
+		if (matches):
+			return itemp;
+		current = current -> next;
+	}
+	return NULL;
+	
 }
 
 // Concatenates two queues, putting the second at the end of the first
