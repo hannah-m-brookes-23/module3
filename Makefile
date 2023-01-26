@@ -5,6 +5,9 @@ all:		test1
 list.o: list.c list.h
 	gcc $(CFLAGS) -c list.c
 
+queue.o: queue.c queue.h
+	gcc $(CFLAGS) -c queue.c
+
 test1.o: test1.c list.h
 	gcc $(CFLAGS) -c test1.c
 

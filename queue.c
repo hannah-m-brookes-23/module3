@@ -55,8 +55,13 @@ queue_t* qopen(void) {
 }
 
 // Closes a queue that the user has opened
-// TODO: Deallocate queue elements as well
 void qclose(queue_t *qp) {
+    internalQueue_t* queue = (internalQueue_t*) qp;
+    
+    while (queue->front == NULL) {
+        qget(qp);
+    }
+    
     removeQueue((internalQueue_t*) qp);
 }
 
@@ -111,5 +116,3 @@ void *qget(queue_t *qp) {
 
     return itemPointer;
 }
-
-
