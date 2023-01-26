@@ -56,6 +56,10 @@ queue_t* qopen(void) {
 
 // Closes a queue that the user has opened
 void qclose(queue_t *qp) {
+
+    if (qp == NULL) 
+        return;
+
     internalQueue_t* queue = (internalQueue_t*) qp;
     
     while (queue->front != NULL) {
@@ -67,10 +71,15 @@ void qclose(queue_t *qp) {
 
 // Puts an item in the queue
 int32_t qput(queue_t *qp, void *elementp) {
+    
+    // Null Checks
+    if (qp == NULL || elementp == NULL) {
+        return 1;
+    }
 
     // Convert user pointer to internal pointer
     internalQueue_t *queue = (internalQueue_t*) qp;
-    
+
     // Create queueItem from item
     queueItem_t* item = makeQueueItem(elementp);
 
@@ -93,6 +102,11 @@ int32_t qput(queue_t *qp, void *elementp) {
 // Gets the first element in the queue and returns a pointer to it. Returns 
 // NULL if queue is empty
 void *qget(queue_t *qp) {
+
+    // Null check
+    if (qp == NULL) 
+        return NULL;
+
     // Convert user pointer to internal pointer
     internalQueue_t *queue = (internalQueue_t*) qp;
     
@@ -119,15 +133,21 @@ void *qget(queue_t *qp) {
 
 // Applies a function to every element in the queue
 void qapply(queue_t *qp, void (*fn)(void* elementp)) {
+    
+    // Null check
+    if (qp == NULL || fn == NULL)
+        return;
+    
+    // Queue conversion
     internalQueue_t *queue = (internalQueue_t*) qp;
 
     queueItem_t *current = queue -> front;
 
+    // Go through all queue elements and apply function
     while (current != NULL) {
         fn(current->item);
         current = current->next;
     }
-
 }
 
 // searches the queue using boolean function, returns pointer to an
@@ -135,23 +155,31 @@ void qapply(queue_t *qp, void (*fn)(void* elementp)) {
 void* qsearch(queue_t *qp,
 							bool (*searchfn)(void* elementp, const void* keyp),
 							const void* skeyp) {
+    // Null check
+    if (qp == NULL || searchfn == NULL || skeyp == NULL)
+        return NULL;
 
-	internalQueue_t *queue = (internalQueue_t*) qp;
-	queueItem_t *current = queue -> front;
+    // external to internal conversion
+    internalQueue_t *queue = (internalQueue_t*) qp;
+    queueItem_t *current = queue -> front;
 
-	while (current != NULL) {
-		void *itemp = current -> item;
-		bool matches = searchfn(itemp, skeyp);
-		if (matches):
-			return itemp;
-		current = current -> next;
-	}
-	return NULL;
+    while (current != NULL) {
+    	void *itemp = current -> item;
+    	bool matches = searchfn(itemp, skeyp);
+    	if (matches)
+    		return itemp;
+    	current = current -> next;
+    }
+    return NULL;
 	
 }
 
 // Concatenates two queues, putting the second at the end of the first
 void qconcat(queue_t *q1p, queue_t *q2p) {
+
+    // Null check
+    if (q1p == NULL || q2p == NULL) 
+        return;
 
     // Converts user queue to internalQueue
     internalQueue_t *q2 = (internalQueue_t*) q2p;
