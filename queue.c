@@ -158,11 +158,13 @@ void* qsearch(queue_t *qp,
     // Null check
     if (qp == NULL || searchfn == NULL || skeyp == NULL)
         return NULL;
-
+		
     // external to internal conversion
     internalQueue_t *queue = (internalQueue_t*) qp;
     queueItem_t *current = queue -> front;
 
+		// iterates through the queue searching for item using given
+		// search function
     while (current != NULL) {
     	void *itemp = current -> item;
     	bool matches = searchfn(itemp, skeyp);
@@ -172,6 +174,55 @@ void* qsearch(queue_t *qp,
     }
     return NULL;
 	
+}
+
+// searches a queue using the given boolean function; removes the
+// element from the queue and returns a pointer to it if element is
+// found; otherwise, return NULL
+void* qremove(queue_t *qp,
+							bool (*searchfn)(void* elementp, const void* keyp),\
+							const void* skeyp) {
+	  // Null check
+    if (qp == NULL || searchfn == NULL || skeyp == NULL)
+        return NULL;
+
+		// external to internal conversion
+    internalQueue_t *queue = (internalQueue_t*) qp;
+    queueItem_t *current = queue -> front;
+		queueItem_t *prev_item = NULL;
+		
+		// iterates through the queue searching for item using given
+		// search function; if item found, remove it from queue and return
+		// pointer to it
+    while (current != NULL) {
+    	void *itemp = current -> item;
+    	bool matches = searchfn(itemp, skeyp);
+
+			if (matches) {
+				// matching item to be removed is the first in the queue:
+				// update the front pointer to the item next in the queue
+				if (prev_item == NULL) 
+					queue -> front = current -> next;
+				// matching item to be removed is the last item in the queue:
+				// update the previous item's next pointer to be null
+				else if (current -> next == NULL) 
+					prev_item -> next = NULL;
+				// item to be removed is in the middle of the queue: update
+				// the previous item's pointer to the removed item's next
+				// pointer
+				else
+					prev_item -> next = current -> next;
+				// free memory for the item
+				removeQueueItem(current);
+				// return pointer to the item
+				return itemp;
+			}
+			
+			prev_item = current;
+    	current = current -> next;
+    }
+		// if no matching item, return NULL
+    return NULL;
 }
 
 // Concatenates two queues, putting the second at the end of the first
