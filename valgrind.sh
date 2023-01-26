@@ -16,6 +16,7 @@ do
 				echo "$FILE passed valgrind check"
 		else
 				echo "$FILE FAILED valgrind check"
+				cat valgrind_err
 		fi
 done
 

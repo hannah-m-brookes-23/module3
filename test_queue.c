@@ -109,8 +109,7 @@ int main(void) {
         n3 = qget(queue3);
     }
     printf("Passed applying a function to a queue\n");
-    
-/*    
+        
     // Create and populate queue for qremove testing
     queue_t *queue4 = qopen();
     int num1 = 1;
@@ -157,10 +156,11 @@ int main(void) {
 
     qclose(queue4);
 
+		
     // Allocation for qconcat testing
     queue_t *queue5 = qopen();
     queue_t *queue6 = qopen();
-
+		
     qput(queue5, &num1);
     qput(queue5, &num2);
     qput(queue6, &num3);
@@ -176,38 +176,58 @@ int main(void) {
         exit(EXIT_FAILURE);
     }
     printf("Passed concatenation of queues\n");
-
-    // Empty queue concatenation
+		
+    // Empty queue concatenation (second queue empty)
     qput(queue5, &num1);
     qput(queue5, &num2);
     queue_t* queue7 = qopen();
     qconcat(queue5, queue7);
 
     int *num = (int*) qget(queue5);
-    int counter = 1;
+    int counter = 0;
     while (num != NULL) {
         num = (int*) qget(queue5);
         counter++;
     }
     if (counter != 2) {
-        printf("Failed empty concatenation\n");
+        printf("Failed empty concatenation - second queue empty\n");
         exit(EXIT_FAILURE);
     }
-    printf("Passed empty concatenation");
-    */ 
+    printf("Passed empty concatenation - second queue empty\n");
+
+
+		// Empty queue concatenation (first queue empty)
+    qput(queue5, &num1);
+    qput(queue5, &num2);
+    queue_t* queue8 = qopen();
+    qconcat(queue8, queue5);
+
+    num = (int*) qget(queue8);
+    counter = 0;
+    while (num != NULL) {
+        num = (int*) qget(queue8);
+        counter++;
+    }
+    if (counter != 2) {
+        printf("Failed empty concatenation - first queue empty\n");
+        exit(EXIT_FAILURE);
+    }
+    printf("Passed empty concatenation - first queue empty\n");
+    
     // Closing of all queues
     qclose(queue); 
     qclose(queue2);
-
+    qclose(queue8);
+		
     // Closing non empty queue, check valgrind for memory leaks
     qput(queue3, n3);
     qclose(queue3);
-    /*
-    qclose(queue4);
-    qclose(queue5);
-    qclose(queue6);
-    qclose(queue7);
-*/
+
+		// Make sure qclose works if pass in NULL pointer
+		queue_t* queue9 = NULL;
+		qclose(queue9);
+
+		
     // All tests passed
     printf("\nAll tests passed!\n");
     exit(EXIT_SUCCESS);
