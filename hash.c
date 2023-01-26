@@ -2,7 +2,14 @@
  * hash.c -- implements a generic hash table as an indexed set of queues.
  *
  */
+#include "hash.h"
+#include "queue.c"
 #include <stdint.h>
+#include <stddef.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+
 
 /* 
  * SuperFastHash() -- produces a number between 0 and the tablesize-1.
@@ -58,8 +65,8 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
 // holds size of table and whether table is empty
 typedef struct hashtableArray {
 	uint32_t size;
-	queue table[];
 	bool empty;
+	queue_t* table[];
 } hashtableArray_t;
 
 
@@ -67,13 +74,13 @@ typedef struct hashtableArray {
 static hashtableArray_t* makeTable(uint32_t hsize) {
 	// calculate amount of memory to allocate (memory for struct,
 	// size of table * memory for queue
-	size_t n_bytes = sizeof(hashtableArray_t) + hsize * sizeof(queue_t);
+	size_t n_bytes = sizeof(hashtableArray_t) + hsize * sizeof(queue_t*);
 	// allocate memory
-	hashtabelArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
+	hashtableArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
 	if (internalTable != NULL) {
-		queue array[hsize];
+		//		queue_t* array[hsize];
 		internalTable -> size = hsize;
-		internalTable -> table = array;
+		//		internalTable -> table = array;
 		internalTable -> empty = true;
 		return internalTable;
 	} else
@@ -82,8 +89,8 @@ static hashtableArray_t* makeTable(uint32_t hsize) {
 
 // get rid of table from memory (i.e. deallocate memory)
 static void removeTable(hashtableArray_t *hashtable) {
-	for (i=0; i<(hashtable -> size); i++) {
-		queue_t queue = (hashtable -> table)[i];
+	for (uint32_t i=0; i<(hashtable -> size); i++) {
+		queue_t* queue = (hashtable -> table)[i];
 		if (queue != NULL)
 			qclose(queue);
 	}
@@ -143,13 +150,13 @@ void happly(hashtable_t *htp, void (*fn)(void* ep)) {
 	// convert input pointer to internal hashtable pointer
 	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
 	// if hashtable is not empty
-	if (hashtable->empty == false) {
-		for (i=0;i<(hashtable->size);i++) {
+	if (hashtable -> empty == false) {
+		for (uint32_t i=0;i<(hashtable->size);i++) {
 			// get the pointer to the queue at index i
 			queue_t *queue = (hashtable->table)[i];
 			// if the queue is not empty
 			if (queue != NULL) {
-				qapply(fn); // apply function
+				qapply(queue, fn); // apply function
 			}
 		}
 	}
@@ -160,6 +167,8 @@ void happly(hashtable_t *htp, void (*fn)(void* ep)) {
  * designated search fn -- returns a pointer to the entry or 
  * NULL if not found
  */
+
+/*
 void *hsearch(hashtable_t *htp,                                                
               bool (*searchfn)(void* elementp, const void* searchkeyp),        
               const char *key,                                                 
@@ -176,12 +185,15 @@ void *hsearch(hashtable_t *htp,
 		return element;
 	}
 	return NULL;
-}                                                                              
+} 
+*/                                                                             
 
 /* hremove -- removes and returns an entry under a designated key
  * using a designated search fn -- returns a pointer to the entry or
  * NULL if not found
  */
+
+/*
 void *hremove(hashtable_t *htp,                                                
               bool (*searchfn)(void* elementp, const void* searchkeyp),
               const char *key,
@@ -199,3 +211,5 @@ void *hremove(hashtable_t *htp,
 	}
 	return NULL;
 }
+
+*/
