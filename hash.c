@@ -54,4 +54,113 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
   hash += hash >> 6;
   return hash % tablesize;
 }
+// structure of hashtable internal
+// holds size of table and whether table is empty
+typedef struct hashtableArray {
+	uint32_t size;
+	queue table[];
+	bool empty;
+} hashtableArray_t;
 
+
+// initializes a table
+static hashtableArray_t* makeTable(uint32_t hsize) {
+	// calculate amount of memory to allocate (memory for struct,
+	// size of table * memory for queue
+	size_t n_bytes = sizeof(hashtableArray_t) + hsize * sizeof(queue_t);
+	// allocate memory
+	hashtabelArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
+	queue array[hsize];
+	internalTable->size = hsize;
+	internalTable->table = array;
+	internalTable->empty = true;
+	return internalTable;
+}
+
+// get rid of table from memory (i.e. deallocate memory)
+static void removeTable(hashtableArray_t *hashtable) {
+	// TODO: figure out how to do this correctly
+	free(hashtable->table);
+	free(hashtable);
+	return;
+}
+
+
+// hopen -- opens a hash table with initial size hsize
+hashtable_t *hopen(uint32_t hsize) {
+	hashtableArray_t* table = makeTable(hsize);
+	return (hashtable_t*) table;
+}                                                                              
+
+// hclose -- closes a hash table
+void hclose(hashtable_t *htp) {                                                
+	removeTable((hashtableArray_t*) htp);
+}                                                                              
+
+
+// hput --  puts an element into a hashtable under designated key
+// returns 0 for success, non-zero otherwise
+// TODO: handle errors in returns
+int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {        
+	// convert input pointer to internal hashtable pointer
+	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
+	// run hash function to get index for the table
+	uint32_t index = SuperFastHash(key, keylen, hashtable->size);
+	// if there is nothing at the index from the hash function make a queue
+	// and pass it to that index of the table
+	if (hashtable->empty == true)
+		hashtable->empty = false;
+	if (hashtable->table[index] != NULL) {
+		queue_t *qp = qopen();
+		qput(qp, *ep);
+		hashtable->table[index] = qp;
+	} else {
+		queue_t *qp = hashtable->table[index];
+		qput(qp, *ep);
+	}
+	return 0;
+}                                                                              
+
+// happly -- applies a function to every entry in hash table
+void happly(hashtable_t *htp, void (*fn)(void* ep)) {                         
+	// convert input pointer to internal hashtable pointer
+	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
+	// if hashtable is not empty
+	if (hashtable->empty == false) {
+		for (i=0;i<(hashtable->size);i++) {
+			// get the pointer to the queue at index i
+			queue_t *queue = (hashtable->table)[i];
+			// if the queue is not empty
+			if (queue != NULL) {
+				qapply(fn); // apply function
+			}
+		}
+	}
+	return;
+}                                                                              
+
+/* hsearch -- searches for an entry under a designated key using a
+ * designated search fn -- returns a pointer to the entry or 
+ * NULL if not found
+ */
+void *hsearch(hashtable_t *htp,                                                
+              bool (*searchfn)(void* elementp, const void* searchkeyp),        
+              const char *key,                                                 
+              int32_t keylen) {
+	// convert input pointer to internal hashtable pointer
+	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
+	// TODO: figure out how the search function works
+}                                                                              
+
+/* hremove -- removes and returns an entry under a designated key
+ * using a designated search fn -- returns a pointer to the entry or
+ * NULL if not found
+ */
+void *hremove(hashtable_t *htp,                                                
+              bool (*searchfn)(void* elementp, const void* searchkeyp),
+              const char *key,
+              int32_t keylen) {
+	// convert input pointer to internal hashtable pointer
+	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
+	// TODO: figure out how the search function works
+}
