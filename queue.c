@@ -55,8 +55,13 @@ queue_t* qopen(void) {
 }
 
 // Closes a queue that the user has opened
-// TODO: Deallocate queue elements as well
 void qclose(queue_t *qp) {
+    internalQueue_t* queue = (internalQueue_t*) qp;
+    
+    while (queue->front != NULL) {
+        qget(qp);
+    }
+    
     removeQueue((internalQueue_t*) qp);
 }
 
@@ -112,4 +117,31 @@ void *qget(queue_t *qp) {
     return itemPointer;
 }
 
+// Applies a function to every element in the queue
+void qapply(queue_t *qp, void (*fn)(void* elementp)) {
+    internalQueue_t *queue = (internalQueue_t*) qp;
 
+    queueItem_t *current = queue->front;
+
+    while (current != NULL) {
+        fn(current->item);
+        current = current->next;
+    }
+
+}
+
+// Concatenates two queues, putting the second at the end of the first
+void qconcat(queue_t *q1p, queue_t *q2p) {
+
+    // Converts user queue to internalQueue
+    internalQueue_t *q2 = (internalQueue_t*) q2p;
+    
+    // Get every item in second queue and put it at the end of second queue 
+    while (q2->front != NULL) {
+        void *item = qget(q2p);
+        qput(q1p, item);
+    }
+    
+    // Deallocate memory of second queue
+    qclose(q2p);
+}

@@ -1,0 +1,16 @@
+# not ignored: .c, .h, Makefile
+
+# ignore objects and libraries
+*.o
+*.a
+
+# ignore emacs save files
+*~
+\#*\#
+.\#*
+
+# ignore debugging symbols
+*.dSYM
+
+# ignore backup dir
+.backup/
