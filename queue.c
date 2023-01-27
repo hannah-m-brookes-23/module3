@@ -56,18 +56,16 @@ queue_t* qopen(void) {
 
 // Closes a queue that the user has opened
 void qclose(queue_t *qp) {
+    if (qp == NULL) 
+        return;
 
-	  if (qp != NULL) {
+    internalQueue_t* queue = (internalQueue_t*) qp;
     
-			internalQueue_t* queue = (internalQueue_t*) qp;
-    
-			while (queue->front != NULL) {
+    while (queue->front != NULL) {
         qget(qp);
-			}
+    }
     
-			removeQueue((internalQueue_t*) qp);
-
-		}
+    removeQueue((internalQueue_t*) qp);
 }
 
 // Puts an item in the queue
@@ -221,24 +219,18 @@ void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), c
 void qconcat(queue_t *q1p, queue_t *q2p) {
 
     // Null check
-    if (q1p == NULL || q2p == NULL) {
-        printf("Null\n");
+    if (q1p == NULL || q2p == NULL) 
         return;
-    }
 
     // Converts user queue to internalQueue
     internalQueue_t *q2 = (internalQueue_t*) q2p;
     
-    if (q2->front == NULL) {
-        return;
-    }
-    
-    // Get every item in second queue and put it at the end of first queue 
+    // Get every item in second queue and put it at the end of second queue 
     while (q2->front != NULL) {
         void *item = qget(q2p);
         qput(q1p, item);
     }
     
-      // Deallocate memory of second queue
-      qclose(q2p);
+    // Deallocate memory of second queue
+    qclose(q2p);
 }
