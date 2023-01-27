@@ -57,16 +57,17 @@ queue_t* qopen(void) {
 // Closes a queue that the user has opened
 void qclose(queue_t *qp) {
 
-    if (qp == NULL) 
-        return;
-
-    internalQueue_t* queue = (internalQueue_t*) qp;
+	  if (qp != NULL) {
     
-    while (queue->front != NULL) {
+			internalQueue_t* queue = (internalQueue_t*) qp;
+    
+			while (queue->front != NULL) {
         qget(qp);
-    }
+			}
     
-    removeQueue((internalQueue_t*) qp);
+			removeQueue((internalQueue_t*) qp);
+
+		}
 }
 
 // Puts an item in the queue
@@ -158,11 +159,13 @@ void* qsearch(queue_t *qp,
     // Null check
     if (qp == NULL || searchfn == NULL || skeyp == NULL)
         return NULL;
-
+		
     // external to internal conversion
     internalQueue_t *queue = (internalQueue_t*) qp;
     queueItem_t *current = queue -> front;
 
+		// iterates through the queue searching for item using given
+		// search function
     while (current != NULL) {
     	void *itemp = current -> item;
     	bool matches = searchfn(itemp, skeyp);
@@ -186,20 +189,23 @@ void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), c
     // Queue is empty
     if (queue->front == NULL) 
         return NULL;
-
+    
+    // Search for item
     queueItem_t *current = queue -> front;
     queueItem_t *past = NULL;
-
     while (current != NULL) {
     	void *itemp = current -> item;
     	bool matches = searchfn(itemp, skeyp);
     	if (matches) {
+            // First item in queue
             if (past == NULL) {
                 queue->front = current->next;
             }
+            // Last item in queue
             if (current->next == NULL) {
                 queue->back = past;
             }
+            // Remove item from list
             past->next = current->next;
             removeQueueItem(current);
     		return itemp;
@@ -233,6 +239,6 @@ void qconcat(queue_t *q1p, queue_t *q2p) {
         qput(q1p, item);
     }
     
-    // Deallocate memory of second queue
-    qclose(q2p);
+      // Deallocate memory of second queue
+      qclose(q2p);
 }
