@@ -5,7 +5,7 @@
  * Created: Tue Jan 24 09:07:01 2023 (-0500)
  * Version: 1.0
  * 
- * Description: tests the get() and put() functions from list 
+ * Description: tests all functions of list module 
  * 
  */
 
@@ -29,6 +29,7 @@ void print_list(car_t *curr_car) {
 }
 
 int main(void) {
+    // Population of list with cars
 	int32_t res = 0;
 	car_t car1 = { .next = NULL, .plate = "car1", .price = 2000.99, .year = 1998 };
 	car_t car2 = { .next = NULL, .plate = "car2", .price = 1111100.25, .year = 2045 };
@@ -42,8 +43,7 @@ int main(void) {
 		printf("test FAILED: put car in empty list\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: put car in empty list\n");
+    printf("test passed: put car in empty list\n");
 
 	// test put car in non-empty list
 	res = lput(&car2);
@@ -51,8 +51,7 @@ int main(void) {
 		printf("test FAILED: put car in non-empty list\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: put car in non-empty list\n");
+    printf("test passed: put car in non-empty list\n");
 	
 	// test remove car from non-empty list
 	car_return = lget();
@@ -60,16 +59,16 @@ int main(void) {
 		printf("test FAILED: remove car from non-empty list\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: remove car from non-empty list\n");
+    printf("test passed: remove car from non-empty list\n");
 	printf("car2 plate: %s\n", car_return -> plate);
-	car_return = lget();
+
+    // test remove second car from non-empty list
+    car_return = lget();
 	if (car_return != &car1) {
 		printf("test FAILED: remove car from non-empty list\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: remove car from non-empty list\n");
+	printf("test passed: remove car from non-empty list\n");
 	printf("car1 plate: %s\n", car_return -> plate);
 
 	// test remove car from empty list
@@ -78,8 +77,7 @@ int main(void) {
 		printf("test FAILED: remove car from empty list\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: remove car from empty list\n");
+    printf("test passed: remove car from empty list\n");
 
 	// test apply function to every car in list
 	lput(&car1);
@@ -93,8 +91,7 @@ int main(void) {
 		printf("test FAILED: apply function to all cars\n");
 		exit(EXIT_FAILURE);
 	}
-	else
-		printf("test passed: apply function to all cars\n");
+	printf("test passed: apply function to all cars\n");
 
 	// test remove from beginning of list
 	lput(&car4);
@@ -103,10 +100,8 @@ int main(void) {
 		printf("test FAILED: remove car from beginning of list\n");
 		exit(EXIT_FAILURE);
 	}
-	else {
-		printf("test passed: remove car from beginning of list\n");
-		print_list(&car3); // should print 3, 2, 1
-	}
+	printf("test passed: remove car from beginning of list\n");
+	print_list(&car3); // should print 3, 2, 1
 	
 	// test remove from end of list
 	lput(&car4);
@@ -115,10 +110,8 @@ int main(void) {
 		printf("test FAILED: remove car from end of list\n");
 		exit(EXIT_FAILURE);
 	}
-	else {
-		printf("test passed: remove car from end of list\n");
-		print_list(&car4); // should print 4, 3, 2
-	}
+	printf("test passed: remove car from end of list\n");
+	print_list(&car4); // should print 4, 3, 2
 
 	// test remove from middle of list
 	lput(&car1);
@@ -127,21 +120,18 @@ int main(void) {
 		printf("test FAILED: remove car from middle of list\n");
 		exit(EXIT_FAILURE);
 	}
-	else {
-		printf("test passed: remove car from middle of list\n");
-		print_list(&car1); // should print 1, 4, 2
-	}
+	printf("test passed: remove car from middle of list\n");
+	print_list(&car1); // should print 1, 4, 2
 
 	// test remove car that doesn't exist
 	car_return = lremove("car20");
 	if (car_return != NULL) {
 		printf("test FAILED: remove car not exist\n");
 		exit(EXIT_FAILURE);
-	}
-	else 
-		printf("test passed: remove car not exist\n");
+	} 
+	printf("test passed: remove car not exist\n");
 
-	
+    printf("\nAll tests passed!\n");	
 	exit(EXIT_SUCCESS);
 }
 
