@@ -174,17 +174,60 @@ void* qsearch(queue_t *qp,
 	
 }
 
+void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), const void *skeyp) {
+
+    // Null check
+    if (qp == NULL || searchfn == NULL || skeyp == NULL)
+        return NULL;
+
+    // external to internal conversion
+    internalQueue_t *queue = (internalQueue_t*) qp;
+
+    // Queue is empty
+    if (queue->front == NULL) 
+        return NULL;
+
+    queueItem_t *current = queue -> front;
+    queueItem_t *past = NULL;
+
+    while (current != NULL) {
+    	void *itemp = current -> item;
+    	bool matches = searchfn(itemp, skeyp);
+    	if (matches) {
+            if (past == NULL) {
+                queue->front = current->next;
+            }
+            if (current->next == NULL) {
+                queue->back = past;
+            }
+            past->next = current->next;
+            removeQueueItem(current);
+    		return itemp;
+        }
+        past = current;
+    	current = current -> next;
+    }
+    return NULL;
+    
+}
+
 // Concatenates two queues, putting the second at the end of the first
 void qconcat(queue_t *q1p, queue_t *q2p) {
 
     // Null check
-    if (q1p == NULL || q2p == NULL) 
+    if (q1p == NULL || q2p == NULL) {
+        printf("Null\n");
         return;
+    }
 
     // Converts user queue to internalQueue
     internalQueue_t *q2 = (internalQueue_t*) q2p;
     
-    // Get every item in second queue and put it at the end of second queue 
+    if (q2->front == NULL) {
+        return;
+    }
+    
+    // Get every item in second queue and put it at the end of first queue 
     while (q2->front != NULL) {
         void *item = qget(q2p);
         qput(q1p, item);

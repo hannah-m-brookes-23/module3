@@ -110,7 +110,6 @@ int main(void) {
     }
     printf("Passed applying a function to a queue\n");
     
-/*    
     // Create and populate queue for qremove testing
     queue_t *queue4 = qopen();
     int num1 = 1;
@@ -155,8 +154,6 @@ int main(void) {
     }
     printf("Passed removing from empty queue\n");
 
-    qclose(queue4);
-
     // Allocation for qconcat testing
     queue_t *queue5 = qopen();
     queue_t *queue6 = qopen();
@@ -184,17 +181,18 @@ int main(void) {
     qconcat(queue5, queue7);
 
     int *num = (int*) qget(queue5);
-    int counter = 1;
+    int counter = 0;
     while (num != NULL) {
         num = (int*) qget(queue5);
         counter++;
     }
+
     if (counter != 2) {
         printf("Failed empty concatenation\n");
         exit(EXIT_FAILURE);
     }
     printf("Passed empty concatenation");
-    */ 
+     
     // Closing of all queues
     qclose(queue); 
     qclose(queue2);
@@ -202,12 +200,12 @@ int main(void) {
     // Closing non empty queue, check valgrind for memory leaks
     qput(queue3, n3);
     qclose(queue3);
-    /*
+    
     qclose(queue4);
     qclose(queue5);
     qclose(queue6);
     qclose(queue7);
-*/
+
     // All tests passed
     printf("\nAll tests passed!\n");
     exit(EXIT_SUCCESS);
