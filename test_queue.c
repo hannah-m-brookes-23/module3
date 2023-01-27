@@ -216,12 +216,10 @@ int main(void) {
     // Closing of all queues
     qclose(queue); 
     qclose(queue2);
-
     // Closing non empty queue, check valgrind for memory leaks
     qput(queue3, n3);
     qclose(queue3);
     qclose(queue4);
-    qclose(queue6);
     qclose(queue7);
 
 	// Make sure qclose works if pass in NULL pointer
