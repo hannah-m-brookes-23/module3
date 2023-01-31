@@ -134,6 +134,21 @@ int main(void) {
     }
     printf("Passed removing element from queue\n");
 
+    // Remove first item from queue and make sure it is removed
+    int num1r = num1;
+    int *queueNum1 = (int*) qremove(queue4, compareInts, &num1r);
+
+    if (*queueNum1 != num1r) {
+        printf("Failed removing first item from queue (incorrect value)\n");
+        exit(EXIT_FAILURE);
+    }
+    int *num1InQueue = (int*) qsearch(queue4, compareInts, &num1r);
+    if (num1InQueue != NULL) {
+        printf("Failed removing first item from queue (still in queue)\n");
+        exit(EXIT_FAILURE);
+    }
+    printf("Passed removing first element from queue\n");
+
     // Remove nonexistent item from queue
     int num4 = 200;
     int *notInQueue = (int*) qremove(queue4, compareInts, &num4);

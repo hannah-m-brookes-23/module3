@@ -8,9 +8,9 @@
  * Description: 
  */
 
-#include "queue.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <queue.h>
 
 // queueItem_t has a pointer to the next queueItem_t and to the actual data
 typedef struct queueItem {
@@ -204,7 +204,8 @@ void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), c
                 queue->back = past;
             }
             // Remove item from list
-            past->next = current->next;
+            if (past != NULL) 
+                past->next = current->next;
             removeQueueItem(current);
     		return itemp;
         }
