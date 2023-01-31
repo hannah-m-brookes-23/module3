@@ -66,7 +66,7 @@ static uint32_t SuperFastHash (const char *data,int len,uint32_t tablesize) {
 typedef struct hashtableArray {
 	uint32_t size;
 	bool empty;
-	queue_t* table[];
+	queue_t** table_p;
 } hashtableArray_t;
 
 
@@ -74,13 +74,15 @@ typedef struct hashtableArray {
 static hashtableArray_t* makeTable(uint32_t hsize) {
 	// calculate amount of memory to allocate (memory for struct,
 	// size of table * memory for queue
-	size_t n_bytes = sizeof(hashtableArray_t) + hsize * sizeof(queue_t*);
+	size_t n_bytes = sizeof(hashtableArray_t);
 	// allocate memory
 	hashtableArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
 	if (internalTable != NULL) {
-		//		queue_t* array[hsize];
+		queue_t* array = (queue_t**) malloc(hsize*sizeof(queue_t*));
 		internalTable -> size = hsize;
-		//		internalTable -> table = array;
+		internalTable -> table_p = array;
+		// figure this out
+		for (int i=0; i<1000; i++) array[i] = NULL;
 		internalTable -> empty = true;
 		return internalTable;
 	} else
@@ -90,7 +92,7 @@ static hashtableArray_t* makeTable(uint32_t hsize) {
 // get rid of table from memory (i.e. deallocate memory)
 static void removeTable(hashtableArray_t *hashtable) {
 	for (uint32_t i=0; i<(hashtable -> size); i++) {
-		queue_t* queue = (hashtable -> table)[i];
+		queue_t* queue = (hashtable -> table_p)[i];
 		if (queue != NULL)
 			qclose(queue);
 	}
@@ -129,16 +131,16 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
 		// and pass it to that index of the table
 		if (hashtable -> empty == true)
 			hashtable -> empty = false;
-		if ((hashtable -> table)[index] == NULL) {
+		if ((hashtable -> table_p)[index] == NULL) {
 			queue_t* qp = qopen();
 			if (qp != NULL) {
 				res = qput(qp, ep);
-				(hashtable -> table)[index] = qp;
+				(hashtable -> table_p)[index] = qp;
 			} else {
 				return 255;
 			}
 		} else {
-			queue_t *qp = (hashtable -> table)[index];
+			queue_t *qp = (hashtable -> table_p)[index];
 			res = qput(qp, ep);
 		}
 		return res;
@@ -153,7 +155,7 @@ void happly(hashtable_t *htp, void (*fn)(void* ep)) {
 	if (hashtable -> empty == false) {
 		for (uint32_t i=0;i<(hashtable->size);i++) {
 			// get the pointer to the queue at index i
-			queue_t *queue = (hashtable->table)[i];
+			queue_t *queue = (hashtable->table_p)[i];
 			// if the queue is not empty
 			if (queue != NULL) {
 				qapply(queue, fn); // apply function
@@ -179,7 +181,7 @@ void *hsearch(hashtable_t *htp,
 		// hash the key to get the index
 		uint32_t index = SuperFastHash(key, keylen, hashtable -> size);
 		// get the pointer to the queue
-		queue_t *queue = (hashtable -> table)[index];
+		queue_t *queue = (hashtable -> table_p)[index];
 		// search the queue for the element
 		void *element = qsearch(queue, searchfn, key);
 		return element;
@@ -204,7 +206,7 @@ void *hremove(hashtable_t *htp,
 		// hash the key to get the index
 		uint32_t index = SuperFastHash(key, keylen, hashtable->size);
 		// get the pointer to the queue
-		queue_t *queue = (hashtable->table)[index];
+		queue_t *queue = (hashtable->table_p)[index];
 		// search the queue for the element and remove it
 		void *element = qremove(queue, searchfn, key);
 		return element;
