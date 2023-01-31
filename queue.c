@@ -199,13 +199,16 @@ void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), c
             if (past == NULL) {
                 queue->front = current->next;
             }
+            else {   
+                past->next = current->next;
+            }
+
             // Last item in queue
             if (current->next == NULL) {
                 queue->back = past;
             }
+            
             // Remove item from list
-            if (past != NULL) 
-                past->next = current->next;
             removeQueueItem(current);
     		return itemp;
         }
