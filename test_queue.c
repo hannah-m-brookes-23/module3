@@ -135,7 +135,7 @@ int main(void) {
     printf("Passed removing element from queue\n");
 
     // Remove first item from queue and make sure it is removed
-    int num1r = num1;
+    int num1r = num3;
     int *queueNum1 = (int*) qremove(queue4, compareInts, &num1r);
 
     if (*queueNum1 != num1r) {
@@ -235,7 +235,7 @@ int main(void) {
     qput(queue3, n3);
     qclose(queue3);
     qclose(queue4);
-    qclose(queue7);
+    qclose(queue8);
 
 	// Make sure qclose works if pass in NULL pointer
 	queue_t* queue9 = NULL;

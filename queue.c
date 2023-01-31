@@ -27,6 +27,8 @@ typedef struct internalQueue {
 // Handles the memory allocation of creating an internalQueue_t and returns a pointer
 static internalQueue_t* makeQueue(void) {
     internalQueue_t* queue = (internalQueue_t*) malloc(sizeof(internalQueue_t));
+		if (queue == NULL)
+			printf("error with allocation\n");
     queue->front = NULL;
     queue->back = NULL;
     return queue;
@@ -39,6 +41,8 @@ static void removeQueue(internalQueue_t* queue) {
 
 static queueItem_t* makeQueueItem(void *itemPointer) {
     queueItem_t *ip = (queueItem_t*) malloc(sizeof(queueItem_t));
+		if (ip == NULL)
+			printf("malloc error make queue item\n");
     ip->next = NULL;
     ip->item = itemPointer;
     return ip;
@@ -58,11 +62,9 @@ queue_t* qopen(void) {
 void qclose(queue_t *qp) {
     if (qp == NULL) 
         return;
-
-    internalQueue_t* queue = (internalQueue_t*) qp;
     
-    while (queue->front != NULL) {
-        qget(qp);
+    while (qget(qp) != NULL) {
+			
     }
     
     removeQueue((internalQueue_t*) qp);
@@ -199,13 +201,14 @@ void* qremove(queue_t *qp, bool (*searchfn)(void *elementp, const void *keyp), c
             if (past == NULL) {
                 queue->front = current->next;
             }
-            else {   
-                past->next = current->next;
-            }
 
             // Last item in queue
             if (current->next == NULL) {
                 queue->back = past;
+            }
+
+						if (past != NULL) {   
+                past->next = current->next;
             }
             
             // Remove item from list
