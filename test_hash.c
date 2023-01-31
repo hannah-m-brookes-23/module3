@@ -38,7 +38,7 @@ int main(void) {
 	car_t car1copy = { .plate = "car1", .price = 2000.99, .year = 1998 };
 	car_t car2copy = { .plate = "car2", .price = 1111100.25, .year = 2045 };
 	car_t car3copy = { .plate = "FXO-249", .price = 18000, .year = 2017 };
-	printf("car1 pointer: %d\n", &car1);
+
     // Add elements to table
 	int32_t result1 = hput(hashtable, &car1, car1.plate, sizeof(car1.plate));
     if (result1 != 0) {

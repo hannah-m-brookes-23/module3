@@ -120,14 +120,16 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
 	int32_t res;
 	// convert input pointer to internal hashtable pointer
 	hashtableArray_t *hashtable = (hashtableArray_t*) htp;
-	if (hashtable != NULL) {
+	if (hashtable == NULL) {
+		return 255;
+	} else {
 		// run hash function to get index for the table
 		uint32_t index = SuperFastHash(key, keylen, hashtable -> size);
 		// if there is nothing at the index from the hash function make a queue
 		// and pass it to that index of the table
 		if (hashtable -> empty == true)
 			hashtable -> empty = false;
-		if ((hashtable -> table)[index] != NULL) {
+		if ((hashtable -> table)[index] == NULL) {
 			queue_t* qp = qopen();
 			if (qp != NULL) {
 				res = qput(qp, ep);
@@ -140,8 +142,6 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
 			res = qput(qp, ep);
 		}
 		return res;
-	} else {
-		return 255;
 	}
 }                                                                              
 
