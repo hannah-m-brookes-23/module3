@@ -128,12 +128,12 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
 		if (hashtable -> empty == true)
 			hashtable -> empty = false;
 		if ((hashtable -> table)[index] != NULL) {
-			queue_t *qp = qopen();
+			queue_t* qp = qopen();
 			if (qp != NULL) {
 				res = qput(qp, ep);
 				(hashtable -> table)[index] = qp;
 			} else {
-				return 1;
+				return 255;
 			}
 		} else {
 			queue_t *qp = (hashtable -> table)[index];
@@ -141,7 +141,7 @@ int32_t hput(hashtable_t *htp, void *ep, const char *key, int keylen) {
 		}
 		return res;
 	} else {
-		return 1;
+		return 255;
 	}
 }                                                                              
 
@@ -168,7 +168,7 @@ void happly(hashtable_t *htp, void (*fn)(void* ep)) {
  * NULL if not found
  */
 
-/*
+
 void *hsearch(hashtable_t *htp,                                                
               bool (*searchfn)(void* elementp, const void* searchkeyp),        
               const char *key,                                                 
@@ -186,14 +186,14 @@ void *hsearch(hashtable_t *htp,
 	}
 	return NULL;
 } 
-*/                                                                             
+                                                                             
 
 /* hremove -- removes and returns an entry under a designated key
  * using a designated search fn -- returns a pointer to the entry or
  * NULL if not found
  */
 
-/*
+
 void *hremove(hashtable_t *htp,                                                
               bool (*searchfn)(void* elementp, const void* searchkeyp),
               const char *key,
@@ -212,4 +212,3 @@ void *hremove(hashtable_t *htp,
 	return NULL;
 }
 
-*/
