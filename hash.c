@@ -78,11 +78,12 @@ static hashtableArray_t* makeTable(uint32_t hsize) {
 	// allocate memory
 	hashtableArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
 	if (internalTable != NULL) {
-		queue_t* array = (queue_t**) malloc(hsize*sizeof(queue_t*));
+		queue_t* array = (queue_t*) calloc((size_t) hsize, sizeof(queue_t*));
 		internalTable -> size = hsize;
 		internalTable -> table_p = array;
 		// figure this out
-		for (int i=0; i<1000; i++) array[i] = NULL;
+		//		for (int i=0; i<hsize; i++) array[i] = NULL;
+		
 		internalTable -> empty = true;
 		return internalTable;
 	} else
@@ -96,6 +97,7 @@ static void removeTable(hashtableArray_t *hashtable) {
 		if (queue != NULL)
 			qclose(queue);
 	}
+	free(hashtable -> table_p);
 	free(hashtable);
 	return;
 }
