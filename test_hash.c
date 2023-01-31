@@ -128,6 +128,7 @@ int main(void) {
     hclose(hashtable2);
 
     printf("\nAll tests passed!\n");
+		exit(EXIT_SUCCESS);
 }
 
 // Double the price of the car, for qapply testing
