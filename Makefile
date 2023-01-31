@@ -2,6 +2,9 @@ CFLAGS=-Wall -pedantic -std=c11 -I. -g
 
 all:		test_list.bin test_queue.bin test_hash.bin
 
+test_%.o: test_%.c
+	gcc $(CFLAGS) -c $<
+
 %.o: %.c %.h
 	gcc $(CFLAGS) -c $<
 
