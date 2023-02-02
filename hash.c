@@ -2,13 +2,13 @@
  * hash.c -- implements a generic hash table as an indexed set of queues.
  *
  */
-#include "hash.h"
-#include "queue.c"
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include "hash.h"
+#include "queue.h"
 
 
 /* 
@@ -78,7 +78,7 @@ static hashtableArray_t* makeTable(uint32_t hsize) {
 	// allocate memory
 	hashtableArray_t* internalTable = (hashtableArray_t*) malloc(n_bytes);
 	if (internalTable != NULL) {
-		queue_t* array = (queue_t*) calloc((size_t) hsize, sizeof(queue_t*));
+		queue_t** array = (queue_t**) calloc((size_t) hsize, sizeof(queue_t*));
 		internalTable -> size = hsize;
 		internalTable -> table_p = array;
 		// figure this out
